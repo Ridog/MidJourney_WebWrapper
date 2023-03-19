@@ -38,7 +38,7 @@ def process_images(mode: str):
     resized_img.save(os.path.join("images", final_filename))
 
     # Copy the final image to the watch folder
-    shutil.copy(os.path.join("images", final_filename), os.path.join(Globals.WATCHFOLDER, final_filename))
+    #shutil.copy(os.path.join("images", final_filename), os.path.join(Globals.WATCHFOLDER, final_filename))
 
     # Delete the original images
     for img_path in images:

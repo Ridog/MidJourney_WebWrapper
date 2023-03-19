@@ -2,6 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from PIL import Image
+import Globals
 
 def process_images(mode: str):
     images_path = "images"

@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from flask_socketio import SocketIO, send
 from image_processing import process_images, clear_images_directory
 import Globals
@@ -39,12 +39,24 @@ def websocket_endpoint():
     socketio.start_background_task(target=check_images)
 
 # Route for processing the user input and generating images
-@app.route("/", methods=['POST'])
+@app.route("/", methods=["POST"])
 def process_prompt():
     clear_images_directory("images")
-    user_input = request.form.get("prompt")
-    # Append the specified string to the user's input
+    user_input = request.form["prompt"]
     user_input += Globals.PROMPT_SUFFIX
+
+    num_calls = 2 if Globals.MODE == "Red Room" else 1
+
+    for _ in range(num_calls):
+        response = PassPromptToSelfBot(user_input)
+        if response.status_code >= 400:
+            print(response.text)
+            print(response.status_code)
+        else:
+            print("Your image is being prepared, please wait a moment...")
+
+    # Redirect to the confirmation page
+    return redirect(url_for('confirmation'))
 
 def start_flask_app():
     app.run(host='0.0.0.0', port=8000)

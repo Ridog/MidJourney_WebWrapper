@@ -46,4 +46,4 @@ def process_prompt():
     user_input += Globals.PROMPT_SUFFIX
 
 def start_flask_app():
-    socketio.run(app, host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000)

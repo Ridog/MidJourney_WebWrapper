@@ -98,29 +98,19 @@
 		    });
 		}
 
-connectWebSocket();
+		connectWebSocket();
 
-function fadeOutAndRedirect(url) {
-    document.body.style.opacity = 0;
-    setTimeout(function () {
-        window.location.href = url;
-    }, 1000);
-}
-
-
-        connectWebSocket();
-
-        function fadeOutAndRedirect(url) {
-            document.body.style.opacity = 0;
-            setTimeout(function () {
-                window.location.href = url;
-            }, 1000);
-        }
+		function fadeOutAndRedirect(url) {
+		    document.body.style.opacity = 0;
+		    setTimeout(function () {
+		        window.location.href = url;
+		    }, 1000);
+		}
     </script>
 </head>
 <body>
     <h1>Your submission is being generated...</h1>
     <p>(give it a couple minutes)</p>
-    <button onclick="fadeOutAndRedirect()">BACK TO PROMPT</button>
+    <button onclick="fadeOutAndRedirect(/)">BACK TO PROMPT</button>
 </body>
 </html>

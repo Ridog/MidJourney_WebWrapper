@@ -69,35 +69,44 @@
 			color: #fff;
 		}
 	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 	<script>
         let socket;
-        let reconnectInterval;
+		let reconnectInterval;
 
-        function connectWebSocket() {
-            socket = new WebSocket(`ws://${window.location.host}/ws`);
+		function connectWebSocket() {
+		    socket = io(`http://${window.location.host}`);
 
-            socket.addEventListener("open", (event) => {
-                console.log("WebSocket connection opened:", event);
-                clearInterval(reconnectInterval);
-            });
+		    socket.on("connect", () => {
+		        console.log("Socket.IO connection opened");
+		        clearInterval(reconnectInterval);
+		    });
 
-            socket.addEventListener("message", (event) => {
-                if (event.data === "images_ready") {
-                    fadeOutAndRedirect("/final_landing");
-                }
-            });
+		    socket.on("images_ready", () => {
+		        fadeOutAndRedirect("/final_landing");
+		    });
 
-            socket.addEventListener("close", (event) => {
-                console.log("WebSocket connection closed:", event);
-                if (!reconnectInterval) {
-                    reconnectInterval = setInterval(connectWebSocket, 5000);
-                }
-            });
+		    socket.on("disconnect", () => {
+		        console.log("Socket.IO connection closed");
+		        if (!reconnectInterval) {
+		            reconnectInterval = setInterval(connectWebSocket, 5000);
+		        }
+		    });
 
-            socket.addEventListener("error", (event) => {
-                console.log("WebSocket error:", event);
-            });
-        }
+		    socket.on("error", (event) => {
+		        console.log("Socket.IO error:", event);
+		    });
+		}
+
+connectWebSocket();
+
+function fadeOutAndRedirect(url) {
+    document.body.style.opacity = 0;
+    setTimeout(function () {
+        window.location.href = url;
+    }, 1000);
+}
+
 
         connectWebSocket();
 

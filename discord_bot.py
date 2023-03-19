@@ -4,6 +4,8 @@ import Globals
 from Salai import PassPromptToSelfBot, Upscale
 from image_processing import process_images, clear_images_directory
 import os
+from typing import Union
+from discord import Message
 
 bot = discord.Client(intents=discord.Intents.all())
 
@@ -48,6 +50,30 @@ async def on_message(message):
             for i in range(1, num_images + 1):
                 print(f"Upscaling image {i}")
                 Upscale(i, Globals.targetID, Globals.targetHash)
+
+@bot.event
+async def on_message_edit(before: Message, after: Message):
+    # Ignore messages from unwanted users
+    if str(after.author.id) != Globals.MID_JOURNEY_ID:
+        return
+
+    # Check if the edited message contains a progress percentage
+    if "%" in after.content:
+        progress = extract_progress(after.content)
+        if progress is not None:
+            print(progress)
+            pass
+
+
+def extract_progress(content: str) -> Union[int, None]:
+    try:
+        progress = int(content.strip().rstrip('%'))
+        if 0 <= progress <= 100:
+            return progress
+    except ValueError:
+        pass
+    return None
+
 
 # Function to run the Discord bot and handle KeyboardInterrupt
 async def run_discord_bot():

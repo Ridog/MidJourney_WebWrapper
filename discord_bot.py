@@ -68,8 +68,8 @@ async def on_message_edit(before: Message, after: Message):
     # Check if the edited message contains a progress percentage
     if "%" in after.content:
         progress = extract_progress(after.content)
-            if progress is not None:
-                await publish_progress_update(progress)
+        if progress is not None:
+            await publish_progress_update(progress)
 
 
 

@@ -56,5 +56,9 @@ async def run_discord_bot():
     except KeyboardInterrupt:
         await bot.logout()
 
+async def stop_discord_bot():
+    await bot.close()
+
+
 if __name__ == '__main__':
     bot.run(Globals.DAVINCI_TOKEN)

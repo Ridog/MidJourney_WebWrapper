@@ -5,13 +5,24 @@ from Salai import PassPromptToSelfBot, Upscale
 import Globals
 import os
 import time
+import aioredis
 
 def start_flask_app():
+    app.on_startup.append(redis_progress_updates)
     socketio.run(app, host='0.0.0.0', port=8000)
 
     
 def stop_flask_app():
     print("help what do I do here")
+
+async def redis_progress_updates(app):
+    sio = app["sio"]
+    redis = await aioredis.create_redis_pool("redis://localhost")
+    channel, = await redis.subscribe("progress_update_channel")
+
+    async for msg in channel.iter(encoding="utf-8"):
+        progress = int(msg)
+        await sio.emit("progress_update", progress)
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='threading')

@@ -6,6 +6,13 @@ import Globals
 import os
 import time
 
+def start_flask_app():
+    socketio.run(app, host='0.0.0.0', port=8000)
+
+    
+def stop_flask_app():
+    print("help what do I do here")
+
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='threading')
 
@@ -61,11 +68,7 @@ def websocket_endpoint():
         process_images(Globals.MODE)
 
         # Notify the client when the expected number of images are detected
-        send("images_ready")
-
+        socketio.emit("images_ready")
     socketio.start_background_task(target=check_images)
 
-
-
-def start_flask_app():
-    app.run(host='0.0.0.0', port=8000)
+    

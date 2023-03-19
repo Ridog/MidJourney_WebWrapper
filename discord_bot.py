@@ -3,6 +3,7 @@ import discord
 import Globals
 from Salai import PassPromptToSelfBot, Upscale
 from image_processing import process_images, clear_images_directory
+import os
 
 bot = discord.Client(intents=discord.Intents.all())
 

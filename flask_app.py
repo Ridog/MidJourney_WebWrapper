@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from flask_socketio import SocketIO, send
 from image_processing import process_images, clear_images_directory
+import Globals
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='threading')

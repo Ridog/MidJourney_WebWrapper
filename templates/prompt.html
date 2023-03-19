@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Enter a Prompt</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			background-color: white;
+		}
+
+		form {
+			background-color: white;
+			padding: 2rem;
+			width: 80%;
+			text-align: center;
+		}
+
+		input[type="text"] {
+			display: block;
+			width: 100%;
+			padding: 0.5rem;
+			font-size: 1.5rem;
+			font-weight: bold;
+			text-align: center;
+			border: none;
+			border-bottom: 1px solid #ccc;
+			background-color: transparent;
+			margin-bottom: 1rem;
+		}
+
+		input[type="text"]:focus {
+			outline: none;
+			border-bottom: 1px solid #000;
+		}
+
+		input[type="submit"] {
+			background-color: white;
+			border: 1px solid #000;
+			color: #000;
+			padding: 0.5rem 1rem;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 1.5rem;
+			font-weight: bold;
+			border-radius: 0;
+			cursor: pointer;
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #000;
+			color: #fff;
+		}
+		#fullscreen-container {
+		    opacity: 0;
+		    position: fixed;
+		    top: 5px;
+		    right: 5px;
+		    width: 120px;
+		    height: 40px;
+		    transition: opacity 0.3s;
+		}
+		.fullscreen-button {
+		    background-color: white;
+		    border: 1px solid #000;
+		    color: #000;
+		    padding: 0.3rem 0.6rem; /* reduced padding */
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 0.9rem; /* reduced font-size */
+		    font-weight: bold;
+		    border-radius: 0;
+		    cursor: pointer;
+		    transition: background-color 0.3s, color 0.3s;
+		    position: fixed;
+		    top: 10px;
+		    right: 10px;
+		}
+
+	    .fullscreen-button:hover {
+	        background-color: #000;
+	        color: #fff;
+	    }
+	</style>
+	<script>
+		function toggleFullScreen() {
+		    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+		        if (document.documentElement.requestFullscreen) {
+		            document.documentElement.requestFullscreen();
+		        } else if (document.documentElement.webkitRequestFullscreen) {
+		            document.documentElement.webkitRequestFullscreen();
+		        } else if (document.documentElement.mozRequestFullScreen) {
+		            document.documentElement.mozRequestFullScreen();
+		        } else if (document.documentElement.msRequestFullscreen) {
+		            document.documentElement.msRequestFullscreen();
+		        }
+		    } else {
+		        if (document.exitFullscreen) {
+		            document.exitFullscreen();
+		        } else if (document.webkitExitFullscreen) {
+		            document.webkitExitFullscreen();
+		        } else if (document.mozCancelFullScreen) {
+		            document.mozCancelFullScreen();
+		        } else if (document.msExitFullscreen) {
+		            document.msExitFullscreen();
+		        }
+		    }
+		}
+		document.addEventListener("mousemove", (event) => {
+		    const container = document.getElementById("fullscreen-container");
+		    const rect = container.getBoundingClientRect();
+
+		    const proximityThreshold = 50;
+		    const xDist = Math.min(Math.abs(event.clientX - rect.left), Math.abs(event.clientX - rect.right));
+		    const yDist = Math.min(Math.abs(event.clientY - rect.top), Math.abs(event.clientY - rect.bottom));
+
+		    if (xDist < proximityThreshold && yDist < proximityThreshold) {
+		        container.style.opacity = "1";
+		    } else {
+		        container.style.opacity = "0";
+		    }
+		});
+		function onSubmit(event) {
+		    const promptInput = document.getElementById("prompt");
+		    const submitButton = document.getElementById("submit-button");
+
+		    if (promptInput.value.trim() === "") {
+		        event.preventDefault();
+		        alert("Prompt cannot be blank!");
+		    } else {
+		        submitButton.disabled = true;
+		        submitButton.style.opacity = "0.5";
+		    }
+		}
+	</script>
+</head>
+<body>
+	<form method="post" onsubmit="onSubmit(event)">
+		<input type="text" id="prompt" name="prompt" autofocus><br><br>
+		<input type="submit" id="submit-button" value="SUBMIT">
+		<div id="fullscreen-container">
+   			<button type="button" class="fullscreen-button" onclick="toggleFullScreen()">Toggle Fullscreen</button>
+		</div>
+	</form>
+</body>
+</html>

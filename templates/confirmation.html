@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Confirmation</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			background-color: white;
+			opacity: 0;
+			animation: fadeIn 1s ease-in-out forwards;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+
+		@keyframes pulse {
+			0%, 100% {
+				opacity: 0.5;
+			}
+			50% {
+				opacity: 1;
+			}
+		}
+
+		h1, p {
+			animation: pulse 1s infinite;
+		}
+
+		h1 {
+			margin-bottom: 0rem;
+			font-weight: bold;
+			font-size: 3rem;
+		}
+
+		p {
+			margin-bottom: 10rem;
+			font-weight: bold;
+			font-size: 1.2rem;
+		}
+
+		button {
+			background-color: white;
+			border: 1px solid #000;
+			color: #000;
+			padding: 0.5rem 1rem;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 1.5rem;
+			font-weight: bold;
+			border-radius: 0;
+			cursor: pointer;
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		button:hover {
+			background-color: #000;
+			color: #fff;
+		}
+	</style>
+	<script>
+        let socket;
+        let reconnectInterval;
+
+        function connectWebSocket() {
+            socket = new WebSocket(`ws://${window.location.host}/ws`);
+
+            socket.addEventListener("open", (event) => {
+                console.log("WebSocket connection opened:", event);
+                clearInterval(reconnectInterval);
+            });
+
+            socket.addEventListener("message", (event) => {
+                if (event.data === "images_ready") {
+                    fadeOutAndRedirect("/final_landing");
+                }
+            });
+
+            socket.addEventListener("close", (event) => {
+                console.log("WebSocket connection closed:", event);
+                if (!reconnectInterval) {
+                    reconnectInterval = setInterval(connectWebSocket, 5000);
+                }
+            });
+
+            socket.addEventListener("error", (event) => {
+                console.log("WebSocket error:", event);
+            });
+        }
+
+        connectWebSocket();
+
+        function fadeOutAndRedirect(url) {
+            document.body.style.opacity = 0;
+            setTimeout(function () {
+                window.location.href = url;
+            }, 1000);
+        }
+    </script>
+</head>
+<body>
+    <h1>Your submission is being generated...</h1>
+    <p>(give it a couple minutes)</p>
+    <button onclick="fadeOutAndRedirect()">BACK TO PROMPT</button>
+</body>
+</html>

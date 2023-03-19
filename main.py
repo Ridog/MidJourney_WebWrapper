@@ -1,17 +1,17 @@
-from multiprocessing import Process
+import threading
 from flask_app import start_flask_app
 from discord_bot import run_discord_bot, bot
 import Globals
 
 if __name__ == '__main__':
-    # Create separate processes for the Flask app and the Discord bot
-    flask_process = Process(target=start_flask_app)
-    discord_process = Process(target=bot.run, args=(Globals.DAVINCI_TOKEN,))
+    # Create separate threads for the Flask app and the Discord bot
+    flask_thread = threading.Thread(target=start_flask_app)
+    discord_thread = threading.Thread(target=bot.run, args=(Globals.DAVINCI_TOKEN,))
 
-    # Start both processes
-    flask_process.start()
-    discord_process.start()
+    # Start both threads
+    flask_thread.start()
+    discord_thread.start()
 
-    # Wait for both processes to complete
-    flask_process.join()
-    discord_process.join()
+    # Wait for both threads to complete
+    flask_thread.join()
+    discord_thread.join()

@@ -6,6 +6,7 @@ from image_processing import process_images, clear_images_directory
 import os
 from typing import Union
 from discord import Message
+import re
 
 bot = discord.Client(intents=discord.Intents.all())
 
@@ -67,9 +68,11 @@ async def on_message_edit(before: Message, after: Message):
 
 def extract_progress(content: str) -> Union[int, None]:
     try:
-        progress = int(content.strip().rstrip('%'))
-        if 0 <= progress <= 100:
-            return progress
+        match = re.search(r'\((\d+)%\)', content)
+        if match:
+            progress = int(match.group(1))
+            if 0 <= progress <= 100:
+                return progress
     except ValueError:
         pass
     return None

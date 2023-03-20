@@ -60,14 +60,14 @@ async def on_message_edit(before: Message, after: Message):
 
     # Check if the edited message contains a progress percentage
     if "%" in after.content:
-        new_progress = extract_progress(after.content)
-        if progress != new_progress:
-            progress = new_progress
-            print(progress)
+        new_progress = extract_percentage(after.content)
+        if Globals.progress != new_progress:
+            Globals.progress = new_progress
+            print(Globals.progress)
             pass
 
 
-def extract_progress(content: str) -> Union[int, None]:
+def extract_percentage(content: str) -> Union[int, None]:
     try:
         match = re.search(r'\((\d+)%\)', content)
         if match:

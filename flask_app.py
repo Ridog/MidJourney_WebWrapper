@@ -58,7 +58,11 @@ def websocket_endpoint():
         expected_images = 8 if Globals.MODE == "Red Room" else 1
 
         # Poll for the expected number of images in the /images directory
+        new_progress = 0
         while True:
+            if Globals.progress != new_progress:
+                socketio.emit('progress_update', Globals.progress)
+                new_progress = Globals.progress
             images_count = len([f for f in os.listdir("images") if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg', '.png')])
             if images_count == expected_images:
                 break

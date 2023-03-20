@@ -7,15 +7,8 @@ import os
 from typing import Union
 from discord import Message
 import re
-import aioredis
 
 bot = discord.Client(intents=discord.Intents.all())
-
-async def publish_progress_update(progress):
-    redis = await aioredis.create_redis_pool("redis://localhost")
-    await redis.publish("progress_update_channel", progress)
-    redis.close()
-    await redis.wait_closed()
 
 # Discord bot event for when the bot is ready
 @bot.event
@@ -69,8 +62,8 @@ async def on_message_edit(before: Message, after: Message):
     if "%" in after.content:
         progress = extract_progress(after.content)
         if progress is not None:
-            await publish_progress_update(progress)
-
+            print(progress)
+            pass
 
 
 def extract_progress(content: str) -> Union[int, None]:

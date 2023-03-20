@@ -68,22 +68,6 @@
 			background-color: #000;
 			color: #fff;
 		}
-		.progress-container {
-		  width: 100%;
-		  height: 30px;
-		  background-color: #f3f3f3;
-		  margin-top: 2rem;
-		  border: 1px solid black;
-		}
-
-		.progress-bar {
-		  height: 100%;
-		  width: 0%;
-		  background-color: #000;
-		  text-align: center;
-		  line-height: 30px;
-		  color: white;
-		}
 	</style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 	<script>
@@ -97,10 +81,7 @@
 		        console.log("Socket.IO connection opened");
 		        clearInterval(reconnectInterval);
 		    });
-			socket.on("progress_update", (progress) => {
-			  let progressBar = document.getElementById("progressBar");
-			  progressBar.style.width = progress + "%";
-			});
+
 		    socket.on("images_ready", () => {
 		        fadeOutAndRedirect("/final_landing");
 		    });
@@ -116,7 +97,6 @@
 		        console.log("Socket.IO error:", event);
 		    });
 		}
-		
 
 		connectWebSocket();
 
@@ -126,15 +106,11 @@
 				window.location.href = '/';
 			}, 1000);
 		}
-
     </script>
 </head>
 <body>
     <h1>Your submission is being generated...</h1>
     <p>(give it a couple minutes)</p>
-    <div class="progress-container">
-    	<div class="progress-bar" id="progressBar"></div>
-	</div>
     <button onclick="fadeOutAndRedirect()">BACK TO PROMPT</button>
 </body>
 </html>

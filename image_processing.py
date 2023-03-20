@@ -5,6 +5,7 @@ from PIL import Image
 import Globals
 
 def process_images(mode: str):
+    Globals.status = "processing"
     images_path = "images"
     output_filename = "Midjourney[140,0].png"
     images = [os.path.join(images_path, f) for f in os.listdir(images_path) if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg', '.png')]
@@ -43,6 +44,7 @@ def process_images(mode: str):
     # Delete the original images
     for img_path in images:
         os.remove(img_path)
+    Globals.status = "done"
 
 # Function to clear the images directory of files with specified extensions
 def clear_images_directory(directory: str, allowed_extensions: tuple = ('.jpg', '.jpeg', '.png')):

@@ -33,6 +33,7 @@ def final_landing():
 # Route for processing the user input and generating images
 @app.route("/", methods=["POST"])
 def process_prompt():
+    Globals.status = "generating"
     clear_images_directory("images")
     user_input = request.form["prompt"]
     user_input += Globals.PROMPT_SUFFIX
@@ -53,13 +54,14 @@ def process_prompt():
 # WebSocket endpoint for notifying the client when the expected number of images are ready
 @socketio.on('connect')
 def websocket_endpoint():
-    def check_images():
+    def push_status():
         # Determine the expected number of images based on Globals.MODE
         expected_images = 8 if Globals.MODE == "Red Room" else 1
 
         # Poll for the expected number of images in the /images directory
         new_progress = 0
         while True:
+            if Globals.MODE == "Red Room"
             if Globals.progress != new_progress:
                 socketio.emit('progress_update', Globals.progress)
                 new_progress = Globals.progress
@@ -68,11 +70,18 @@ def websocket_endpoint():
                 break
             time.sleep(1)
 
+        socketio.emit('status', 'processing')
         # Process the images based on Globals.MODE
         process_images(Globals.MODE)
+        while True:
+            if Globals.status == "done":
+                socketio.emit('status', 'done')
+                Globals.status = "idle"
+                break
+            time.sleep(1)
 
         # Notify the client when the expected number of images are detected
         socketio.emit("images_ready")
-    socketio.start_background_task(target=check_images)
+    socketio.start_background_task(target=push_status)
 
     

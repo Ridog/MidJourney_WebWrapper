@@ -15,4 +15,5 @@ USE_MESSAGED_CHANNEL = False
 MID_JOURNEY_ID = "936929561302675456"  #midjourney bot id
 targetID       = ""
 targetHash     = ""
+status         = ""
 progress       = 0

@@ -14,6 +14,7 @@ bot = discord.Client(intents=discord.Intents.all())
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
+    Globals.status = "idle"
 
 # Image count variable for keeping track of the number of images processed
 image_count = 0
@@ -22,49 +23,51 @@ image_count = 0
 @bot.event
 async def on_message(message):
     global image_count
+    if not Globals.status == "idle"
+        # Ignore messages with unwanted content or from unwanted users
+        if not message.content or "%" in message.content or "Waiting to start" in message.content or str(message.author.id) != Globals.MID_JOURNEY_ID:
+            return
 
-    # Ignore messages with unwanted content or from unwanted users
-    if not message.content or "%" in message.content or "Waiting to start" in message.content or str(message.author.id) != Globals.MID_JOURNEY_ID:
-        return
+        # Save attachments from messages with "Image #" string
+        if "Image #" in message.content:
+            for attachment in message.attachments:
+                # Create the /images directory if it doesn't exist
+                if not os.path.exists("images"):
+                    os.makedirs("images")
 
-    # Save attachments from messages with "Image #" string
-    if "Image #" in message.content:
-        for attachment in message.attachments:
-            # Create the /images directory if it doesn't exist
-            if not os.path.exists("images"):
-                os.makedirs("images")
+                # Increment the image count
+                image_count += 1
 
-            # Increment the image count
-            image_count += 1
+                # Save the attachment to the /images directory with the desired suffix
+                file_path = os.path.join("images", f"[140,{image_count}].png")
+                await attachment.save(file_path)
+            return
+        if message.attachments and str(message.author.id) == Globals.MID_JOURNEY_ID:
+                Globals.targetID = str(message.id)
+                Globals.targetHash = str((message.attachments[0].url.split("_")[-1]).split(".")[0])
 
-            # Save the attachment to the /images directory with the desired suffix
-            file_path = os.path.join("images", f"[140,{image_count}].png")
-            await attachment.save(file_path)
-        return
-    if message.attachments and str(message.author.id) == Globals.MID_JOURNEY_ID:
-            Globals.targetID = str(message.id)
-            Globals.targetHash = str((message.attachments[0].url.split("_")[-1]).split(".")[0])
+                # Determine how many images to upscale based on Globals.MODE
+                num_images = 4 if Globals.MODE == "Red Room" else 1
 
-            # Determine how many images to upscale based on Globals.MODE
-            num_images = 4 if Globals.MODE == "Red Room" else 1
-
-            for i in range(1, num_images + 1):
-                print(f"Upscaling image {i}")
-                Upscale(i, Globals.targetID, Globals.targetHash)
+                for i in range(1, num_images + 1):
+                    print(f"Upscaling image {i}")
+                    Globals.status = "upscaling"
+                    Upscale(i, Globals.targetID, Globals.targetHash)
 
 @bot.event
 async def on_message_edit(before: Message, after: Message):
     # Ignore messages from unwanted users
-    if str(after.author.id) != Globals.MID_JOURNEY_ID:
-        return
+    if Globals.status == "generating"
+        if str(after.author.id) != Globals.MID_JOURNEY_ID:
+            return
 
-    # Check if the edited message contains a progress percentage
-    if "%" in after.content:
-        new_progress = extract_percentage(after.content)
-        if Globals.progress != new_progress:
-            Globals.progress = new_progress
-            print(Globals.progress)
-            pass
+        # Check if the edited message contains a progress percentage
+        if "%" in after.content:
+            new_progress = extract_percentage(after.content)
+            if Globals.progress != new_progress:
+                Globals.progress = new_progress
+                print(Globals.progress)
+                pass
 
 
 def extract_percentage(content: str) -> Union[int, None]:
